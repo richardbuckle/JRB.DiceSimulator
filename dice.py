@@ -3,6 +3,9 @@
 '''
 Sundry dice simulations, with brute force and Monte Carlo analysis.
 
+This is really just a toy project since most of the rule-sets tested
+can be solved analytically.
+
 URL:            <http://www.sailmaker.co.uk/newfiles/dice.py>
 
 Maintainer:     Richard Buckle <mailto:richardb@sailmaker.co.uk>
@@ -243,6 +246,9 @@ class Dice(object):
 
     def montecarlo(self, trials):
         'Perform a monte carlo simulation and return the histogram.'
+        if trials < 2:
+            print 'You need at least 2 trials'
+            return
         histogram = Histogram(self.minVal, self.maxVal)
         for dummy in xrange(trials):
             # random roll
@@ -507,6 +513,7 @@ class RiskDice(Dice):
 class ArcanumDice(Dice):
     '''
     Dice rolls for the game found in Arcanum.
+    <http://www.gog.com/en/gamecard/arcanum_of_steamworks_and_magick_obscura>
     
     The player rolls 2d6.
     On the first roll, 7 is a win, 2 is a loss and any other score is remembered as the 'mark',
@@ -536,7 +543,7 @@ class ArcanumDice(Dice):
                 return -1 # loss
             self.mark = pips
             return 0 # roll again
-        else:
+        else: # subsequent roll
             if pips == 7 or pips == 2:
                 return -1 # loss
             if pips == self.mark:
@@ -552,6 +559,7 @@ class ArcanumDice(Dice):
         return result
         
     def bruteforce(self):
+        'Not supported.'
         print 'Brute force is not supported for the Arcanum dice rules.'
 
     
@@ -582,7 +590,7 @@ def main():
         histogram = dice.montecarlo(10000)
         histogram.dump()
 
-    if False:
+    if True:
         print '4d6 discard 1 montecarlo'
         dice = DiceDiscard(4, 6, 1, 1)
         histogram = dice.montecarlo(10000)
@@ -627,7 +635,7 @@ def main():
     if True:
         print 'Arcanum montecarlo'
         dice = ArcanumDice()
-        histogram = dice.montecarlo(5)
+        histogram = dice.montecarlo(100000)
         histogram.dump()
 
 
