@@ -1,0 +1,578 @@
+Help on module dice:
+
+NAME
+    dice - Sundry dice simulations, with brute force and Monte Carlo analysis.
+
+FILE
+    /Development/Python/dice/dice.py
+
+DESCRIPTION
+    URL:            <http://www.sailmaker.co.uk/newfiles/dice.py>
+    
+    Maintainer:     Richard Buckle <mailto:richardb@sailmaker.co.uk>
+    
+    Licence:        Public domain
+    
+    Usage:          See main()
+    
+    Compatibility:  Python 2.3 or later
+
+CLASSES
+    __builtin__.dict(__builtin__.object)
+        Histogram
+        MultiHistogramTabulator
+    __builtin__.object
+        Dice
+            DiceDiscard
+            RiskDice
+            StoryTellerDice
+    
+    class Dice(__builtin__.object)
+     |  Base class for rolling dice; sums the pips on the dice.
+     |  
+     |  To implement a different rule set, it is usually only necessary to override
+     |  roll(), for Monte Carlo analysis, and fromState(), for brute force analysis.
+     |  
+     |  Subclasses that implement "roll again" rule sets (e.g. d20 critical hits and 
+     |  the StoryTelling system) will usually need to allocate additional "shadow dice" 
+     |  in self.state for the potential second roll in order to do a full brute force analysis. 
+     |  
+     |  Be aware that this will exponentially increase the time taken by brute force analysis.
+     |  In such cases, a Monte Carlo approach is perhaps the better option.
+     |  
+     |  Methods defined here:
+     |  
+     |  __init__(self, num, sides, multiplier=1)
+     |      Initialise from number of dice, number of sides and overall multiplier.
+     |  
+     |  __iter__(self)
+     |      Return an iterator, for use by bruteforce().
+     |  
+     |  bruteforce(self)
+     |      Perform a brute force enumeration and return the histogram.
+     |  
+     |  fromState(self)
+     |      Evaluate the current brute force state:
+     |      the base class implementation is to sum pips on the dice.
+     |      
+     |      Subclasses will usually need to override this.
+     |  
+     |  montecarlo(self, trials)
+     |      Perform a monte carlo simulation and return the histogram.
+     |  
+     |  next(self)
+     |      Used internally by bruteforce().
+     |      
+     |      Return our evaluation of the current brute force state, also advancing it.
+     |  
+     |  roll(self)
+     |      Evaluate one random roll of these dice.
+     |      
+     |      Subclasses will usually need to override this.
+     |  
+     |  ----------------------------------------------------------------------
+     |  Data descriptors defined here:
+     |  
+     |  __dict__
+     |      dictionary for instance variables (if defined)
+     |  
+     |  __weakref__
+     |      list of weak references to the object (if defined)
+    
+    class DiceDiscard(Dice)
+     |  Like Dice, but a given number of lowest values are discarded.
+     |  
+     |  Sometimes used for character generation in d20 systems.
+     |  
+     |  Method resolution order:
+     |      DiceDiscard
+     |      Dice
+     |      __builtin__.object
+     |  
+     |  Methods defined here:
+     |  
+     |  __init__(self, num, sides, multiplier=1, discards=0)
+     |      Initialise from number of dice, number of sides, overall multiplier 
+     |      and number of discardable dice.
+     |      
+     |      Requires discards <= num.
+     |  
+     |  fromState(self)
+     |      Evaluate the current brute force state.
+     |  
+     |  roll(self)
+     |      Evaluate one random roll of these dice.
+     |  
+     |  ----------------------------------------------------------------------
+     |  Methods inherited from Dice:
+     |  
+     |  __iter__(self)
+     |      Return an iterator, for use by bruteforce().
+     |  
+     |  bruteforce(self)
+     |      Perform a brute force enumeration and return the histogram.
+     |  
+     |  montecarlo(self, trials)
+     |      Perform a monte carlo simulation and return the histogram.
+     |  
+     |  next(self)
+     |      Used internally by bruteforce().
+     |      
+     |      Return our evaluation of the current brute force state, also advancing it.
+     |  
+     |  ----------------------------------------------------------------------
+     |  Data descriptors inherited from Dice:
+     |  
+     |  __dict__
+     |      dictionary for instance variables (if defined)
+     |  
+     |  __weakref__
+     |      list of weak references to the object (if defined)
+    
+    class Histogram(__builtin__.dict)
+     |  Subclass of dict to represent a histogram.
+     |  
+     |  The dict.key is the bucket, e.g. the value obtained by rolling some dice
+     |  under whatever set of rules.
+     |  The corresponding dict.value is the observed frequency of that bucket.
+     |  
+     |  To add a sample, use something like: 
+     |      histogram[bucket] = histogram[bucket] + 1
+     |  
+     |  Method resolution order:
+     |      Histogram
+     |      __builtin__.dict
+     |      __builtin__.object
+     |  
+     |  Methods defined here:
+     |  
+     |  __init__(self, minval, maxval)
+     |      Create all buckets and initialize them to 0.
+     |  
+     |  dump(self)
+     |      Print results and summary statistics.
+     |  
+     |  frequency(self, k)
+     |      Return the frequency of key k as a percentage.
+     |  
+     |  mean(self)
+     |      Return the arithmetic mean.
+     |  
+     |  numSamples(self)
+     |      Return the number of samples.
+     |  
+     |  popStdDev(self)
+     |      Return the population standard deviation.
+     |  
+     |  printTabbed(self)
+     |      Print tab-delimited, for import by apps such as Excel.
+     |  
+     |  sampleStdDev(self)
+     |      Return the sample standard deviation.
+     |  
+     |  sigma(self)
+     |      Return the weighted sum of values.
+     |  
+     |  sigmaSquared(self)
+     |      Return the weighted sum of squared values.
+     |  
+     |  ----------------------------------------------------------------------
+     |  Data descriptors defined here:
+     |  
+     |  __dict__
+     |      dictionary for instance variables (if defined)
+     |  
+     |  __weakref__
+     |      list of weak references to the object (if defined)
+     |  
+     |  ----------------------------------------------------------------------
+     |  Methods inherited from __builtin__.dict:
+     |  
+     |  __cmp__(...)
+     |      x.__cmp__(y) <==> cmp(x,y)
+     |  
+     |  __contains__(...)
+     |      D.__contains__(k) -> True if D has a key k, else False
+     |  
+     |  __delitem__(...)
+     |      x.__delitem__(y) <==> del x[y]
+     |  
+     |  __eq__(...)
+     |      x.__eq__(y) <==> x==y
+     |  
+     |  __ge__(...)
+     |      x.__ge__(y) <==> x>=y
+     |  
+     |  __getattribute__(...)
+     |      x.__getattribute__('name') <==> x.name
+     |  
+     |  __getitem__(...)
+     |      x.__getitem__(y) <==> x[y]
+     |  
+     |  __gt__(...)
+     |      x.__gt__(y) <==> x>y
+     |  
+     |  __hash__(...)
+     |      x.__hash__() <==> hash(x)
+     |  
+     |  __iter__(...)
+     |      x.__iter__() <==> iter(x)
+     |  
+     |  __le__(...)
+     |      x.__le__(y) <==> x<=y
+     |  
+     |  __len__(...)
+     |      x.__len__() <==> len(x)
+     |  
+     |  __lt__(...)
+     |      x.__lt__(y) <==> x<y
+     |  
+     |  __ne__(...)
+     |      x.__ne__(y) <==> x!=y
+     |  
+     |  __repr__(...)
+     |      x.__repr__() <==> repr(x)
+     |  
+     |  __setitem__(...)
+     |      x.__setitem__(i, y) <==> x[i]=y
+     |  
+     |  clear(...)
+     |      D.clear() -> None.  Remove all items from D.
+     |  
+     |  copy(...)
+     |      D.copy() -> a shallow copy of D
+     |  
+     |  get(...)
+     |      D.get(k[,d]) -> D[k] if k in D, else d.  d defaults to None.
+     |  
+     |  has_key(...)
+     |      D.has_key(k) -> True if D has a key k, else False
+     |  
+     |  items(...)
+     |      D.items() -> list of D's (key, value) pairs, as 2-tuples
+     |  
+     |  iteritems(...)
+     |      D.iteritems() -> an iterator over the (key, value) items of D
+     |  
+     |  iterkeys(...)
+     |      D.iterkeys() -> an iterator over the keys of D
+     |  
+     |  itervalues(...)
+     |      D.itervalues() -> an iterator over the values of D
+     |  
+     |  keys(...)
+     |      D.keys() -> list of D's keys
+     |  
+     |  pop(...)
+     |      D.pop(k[,d]) -> v, remove specified key and return the corresponding value
+     |      If key is not found, d is returned if given, otherwise KeyError is raised
+     |  
+     |  popitem(...)
+     |      D.popitem() -> (k, v), remove and return some (key, value) pair as a
+     |      2-tuple; but raise KeyError if D is empty
+     |  
+     |  setdefault(...)
+     |      D.setdefault(k[,d]) -> D.get(k,d), also set D[k]=d if k not in D
+     |  
+     |  update(...)
+     |      D.update(E, **F) -> None.  Update D from E and F: for k in E: D[k] = E[k]
+     |      (if E has keys else: for (k, v) in E: D[k] = v) then: for k in F: D[k] = F[k]
+     |  
+     |  values(...)
+     |      D.values() -> list of D's values
+     |  
+     |  ----------------------------------------------------------------------
+     |  Data and other attributes inherited from __builtin__.dict:
+     |  
+     |  __new__ = <built-in method __new__ of type object at 0x23474c>
+     |      T.__new__(S, ...) -> a new object with type S, a subtype of T
+     |  
+     |  fromkeys = <built-in method fromkeys of type object at 0x324c10>
+     |      dict.fromkeys(S[,v]) -> New dict with keys from S and values equal to v.
+     |      v defaults to None.
+    
+    class MultiHistogramTabulator(__builtin__.dict)
+     |  A class to tabulate multiple histograms together for output,
+     |  with headers to distinguish each one.
+     |  
+     |  Tabulates the union of the buckets of each component histogram,
+     |  together with the summary statistics of each.
+     |  
+     |  Method resolution order:
+     |      MultiHistogramTabulator
+     |      __builtin__.dict
+     |      __builtin__.object
+     |  
+     |  Methods defined here:
+     |  
+     |  __init__(self, histograms, headers)
+     |      Construct from a list of histograms and a list of headers.
+     |  
+     |  dump(self)
+     |      Print space-delimited, for command line etc.
+     |  
+     |  printTabbed(self)
+     |      Print tab-delimited, for import by apps such as Excel.
+     |  
+     |  ----------------------------------------------------------------------
+     |  Data descriptors defined here:
+     |  
+     |  __dict__
+     |      dictionary for instance variables (if defined)
+     |  
+     |  __weakref__
+     |      list of weak references to the object (if defined)
+     |  
+     |  ----------------------------------------------------------------------
+     |  Methods inherited from __builtin__.dict:
+     |  
+     |  __cmp__(...)
+     |      x.__cmp__(y) <==> cmp(x,y)
+     |  
+     |  __contains__(...)
+     |      D.__contains__(k) -> True if D has a key k, else False
+     |  
+     |  __delitem__(...)
+     |      x.__delitem__(y) <==> del x[y]
+     |  
+     |  __eq__(...)
+     |      x.__eq__(y) <==> x==y
+     |  
+     |  __ge__(...)
+     |      x.__ge__(y) <==> x>=y
+     |  
+     |  __getattribute__(...)
+     |      x.__getattribute__('name') <==> x.name
+     |  
+     |  __getitem__(...)
+     |      x.__getitem__(y) <==> x[y]
+     |  
+     |  __gt__(...)
+     |      x.__gt__(y) <==> x>y
+     |  
+     |  __hash__(...)
+     |      x.__hash__() <==> hash(x)
+     |  
+     |  __iter__(...)
+     |      x.__iter__() <==> iter(x)
+     |  
+     |  __le__(...)
+     |      x.__le__(y) <==> x<=y
+     |  
+     |  __len__(...)
+     |      x.__len__() <==> len(x)
+     |  
+     |  __lt__(...)
+     |      x.__lt__(y) <==> x<y
+     |  
+     |  __ne__(...)
+     |      x.__ne__(y) <==> x!=y
+     |  
+     |  __repr__(...)
+     |      x.__repr__() <==> repr(x)
+     |  
+     |  __setitem__(...)
+     |      x.__setitem__(i, y) <==> x[i]=y
+     |  
+     |  clear(...)
+     |      D.clear() -> None.  Remove all items from D.
+     |  
+     |  copy(...)
+     |      D.copy() -> a shallow copy of D
+     |  
+     |  get(...)
+     |      D.get(k[,d]) -> D[k] if k in D, else d.  d defaults to None.
+     |  
+     |  has_key(...)
+     |      D.has_key(k) -> True if D has a key k, else False
+     |  
+     |  items(...)
+     |      D.items() -> list of D's (key, value) pairs, as 2-tuples
+     |  
+     |  iteritems(...)
+     |      D.iteritems() -> an iterator over the (key, value) items of D
+     |  
+     |  iterkeys(...)
+     |      D.iterkeys() -> an iterator over the keys of D
+     |  
+     |  itervalues(...)
+     |      D.itervalues() -> an iterator over the values of D
+     |  
+     |  keys(...)
+     |      D.keys() -> list of D's keys
+     |  
+     |  pop(...)
+     |      D.pop(k[,d]) -> v, remove specified key and return the corresponding value
+     |      If key is not found, d is returned if given, otherwise KeyError is raised
+     |  
+     |  popitem(...)
+     |      D.popitem() -> (k, v), remove and return some (key, value) pair as a
+     |      2-tuple; but raise KeyError if D is empty
+     |  
+     |  setdefault(...)
+     |      D.setdefault(k[,d]) -> D.get(k,d), also set D[k]=d if k not in D
+     |  
+     |  update(...)
+     |      D.update(E, **F) -> None.  Update D from E and F: for k in E: D[k] = E[k]
+     |      (if E has keys else: for (k, v) in E: D[k] = v) then: for k in F: D[k] = F[k]
+     |  
+     |  values(...)
+     |      D.values() -> list of D's values
+     |  
+     |  ----------------------------------------------------------------------
+     |  Data and other attributes inherited from __builtin__.dict:
+     |  
+     |  __new__ = <built-in method __new__ of type object at 0x23474c>
+     |      T.__new__(S, ...) -> a new object with type S, a subtype of T
+     |  
+     |  fromkeys = <built-in method fromkeys of type object at 0x326050>
+     |      dict.fromkeys(S[,v]) -> New dict with keys from S and values equal to v.
+     |      v defaults to None.
+    
+    class RiskDice(Dice)
+     |  Dice rolls for the game of Risk.
+     |  
+     |  Attacker rolls attackDice d6, defender rolls defendDice d6,
+     |  where defendDice <= attackDice.
+     |  Each player's dice are sorted and compared.
+     |  If the attacker's die beats the defender's die, the defender loses,
+     |  otherwise the attacker loses.
+     |  
+     |  Method resolution order:
+     |      RiskDice
+     |      Dice
+     |      __builtin__.object
+     |  
+     |  Methods defined here:
+     |  
+     |  __init__(self, attackDice, defendDice)
+     |      Initialise from number of attacking and defending dice.
+     |      
+     |      Requires defendDice <= attackDice.
+     |  
+     |  montecarlo(self, trials)
+     |      Perform a monte carlo simulation and return the histogram
+     |  
+     |  roll(self)
+     |      Return the outcome of one random battle with these dice
+     |      as a tuple (numDefenderWins, numAttackerWins)
+     |  
+     |  sortedRoll(self, num)
+     |      Return one random roll of num dice, sorted descending.
+     |  
+     |  ----------------------------------------------------------------------
+     |  Data and other attributes defined here:
+     |  
+     |  Results = <class 'dice.Results'>
+     |      Square zero-based Matrix of [defender wins][attacker wins]
+     |  
+     |  ----------------------------------------------------------------------
+     |  Methods inherited from Dice:
+     |  
+     |  __iter__(self)
+     |      Return an iterator, for use by bruteforce().
+     |  
+     |  bruteforce(self)
+     |      Perform a brute force enumeration and return the histogram.
+     |  
+     |  fromState(self)
+     |      Evaluate the current brute force state:
+     |      the base class implementation is to sum pips on the dice.
+     |      
+     |      Subclasses will usually need to override this.
+     |  
+     |  next(self)
+     |      Used internally by bruteforce().
+     |      
+     |      Return our evaluation of the current brute force state, also advancing it.
+     |  
+     |  ----------------------------------------------------------------------
+     |  Data descriptors inherited from Dice:
+     |  
+     |  __dict__
+     |      dictionary for instance variables (if defined)
+     |  
+     |  __weakref__
+     |      list of weak references to the object (if defined)
+    
+    class StoryTellerDice(Dice)
+     |  Dice rolls for systems such as White Wolf's "StoryTelling" system.
+     |  <http://en.wikipedia.org/wiki/Storyteller_System>
+     |  
+     |  Like Dice, but result is number of dice with pips >= threshold.
+     |  Dice with pips >= rollAgain can be rolled again,
+     |  for +1 to the result if the pips on the reroll >= threshold.
+     |  
+     |  TODO: this implementation only allows roll-again only once, whereas
+     |  White Wolf's "StoryTelling" system allows unlimited roll-again.
+     |  
+     |  Method resolution order:
+     |      StoryTellerDice
+     |      Dice
+     |      __builtin__.object
+     |  
+     |  Methods defined here:
+     |  
+     |  __init__(self, num, sides=10, threshold=8, rollAgain=10)
+     |      Initialise from number of dice , number of sides, 
+     |      threshold for success and threshold to roll again.
+     |      
+     |      TODO: Roll again is once-only, contrary to White Wolf's system.
+     |      
+     |      Requires rollAgain >= threshold.
+     |  
+     |  fromState(self)
+     |      Evaluate the current brute force state.
+     |      rollAgain giving another >= self.rollAgain is ignored.
+     |  
+     |  roll(self)
+     |      Evaluate one random roll of these dice.
+     |  
+     |  ----------------------------------------------------------------------
+     |  Methods inherited from Dice:
+     |  
+     |  __iter__(self)
+     |      Return an iterator, for use by bruteforce().
+     |  
+     |  bruteforce(self)
+     |      Perform a brute force enumeration and return the histogram.
+     |  
+     |  montecarlo(self, trials)
+     |      Perform a monte carlo simulation and return the histogram.
+     |  
+     |  next(self)
+     |      Used internally by bruteforce().
+     |      
+     |      Return our evaluation of the current brute force state, also advancing it.
+     |  
+     |  ----------------------------------------------------------------------
+     |  Data descriptors inherited from Dice:
+     |  
+     |  __dict__
+     |      dictionary for instance variables (if defined)
+     |  
+     |  __weakref__
+     |      list of weak references to the object (if defined)
+
+FUNCTIONS
+    main()
+        Examples of usage
+
+DATA
+    __author__ = 'Richard Buckle <mailto:richardb@sailmaker.co.uk>'
+    __copyright__ = 'Public domain'
+    __date__ = '2009.01.16'
+    __revision__ = '1.0.3'
+    __status__ = 'stable'
+    __version__ = '1.0.3'
+
+VERSION
+    1.0.3
+
+DATE
+    2009.01.16
+
+AUTHOR
+    Richard Buckle <mailto:richardb@sailmaker.co.uk>
+
+

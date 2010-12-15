@@ -1,0 +1,70 @@
+************* Module dice
+W0511: 32: TODO use reduce instead
+W0511: 43: TODO use reduce instead
+W0511: 56: TODO use reduce instead
+W0231: 20:Histogram.__init__: __init__ method from base class 'dict' is not called
+W0141:220:RiskDice.roll: Used builtin function 'map'
+W0142:289:main: Used * or ** magic
+
+
+Report
+======
+183 statements analysed.
+
+Duplication
+-----------
+
+                         now   previous difference 
+:::::::::::::::::::::::::::::::::::::::::::::::::::
+nb duplicated lines      0     0        =          
+percent duplicated lines 0.000 0.000    =          
+
+
+Raw metrics
+-----------
+
+type      number %     previous difference 
+:::::::::::::::::::::::::::::::::::::::::::
+code      180    70.31 180      =          
+docstring 49     19.14 49       =          
+comment   8      3.12  8        =          
+empty     19     7.42  19       =          
+
+
+Statistics by type
+------------------
+
+type     number old number difference %documented %badname 
+:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+module   1      1          =          100.00      0.00     
+class    4      4          =          100.00      0.00     
+method   21     21         =          100.00      0.00     
+function 4      4          =          100.00      0.00     
+
+
+Total errors / warnings
+-----------------------
+
+type       number previous difference 
+::::::::::::::::::::::::::::::::::::::
+convention 0      0        =          
+refactor   0      0        =          
+warning    6      6        =          
+error      0      2        -2.00      
+
+
+Messages
+--------
+
+message id occurences 
+::::::::::::::::::::::
+W0511      3          
+W0231      1          
+W0142      1          
+W0141      1          
+
+
+Global evaluation
+-----------------
+Your code has been rated at 9.67/10 (previous run: 9.13/10)
+
