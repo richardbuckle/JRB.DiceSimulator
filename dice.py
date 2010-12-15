@@ -186,6 +186,17 @@ class Dice(object):
     def __iter__(self):
         'Return an iterator, for use by bruteforce().'
         return self
+            
+    def description(self):
+        '''
+        Return a description of our rule-set.
+        
+        Subclasses will usually need to override this.
+        '''
+        if self.multiplier == 1:
+            return '%dd%d' % (self.num, self.sides)
+        else:
+            return '%dd%d*%d' % (self.num, self.sides, self.multiplier)
         
     def roll(self):
         '''
@@ -249,6 +260,7 @@ class Dice(object):
         if trials < 2:
             print 'You need at least 2 trials'
             return
+        print '%s: Monte Carlo simulation with %d trials' % (self.description(), trials)
         histogram = Histogram(self.minVal, self.maxVal)
         for dummy in xrange(trials):
             # random roll
@@ -258,6 +270,7 @@ class Dice(object):
         
     def bruteforce(self):
         'Perform a brute force enumeration and return the histogram.'
+        print '%s: brute force enumeration' % (self.description(),)
         histogram = Histogram(self.minVal, self.maxVal)
         for roll in self:
             histogram[roll] = histogram[roll] + 1
@@ -285,6 +298,14 @@ class DiceDiscard(Dice):
         self.maxVal = (num - discards) * multiplier * sides 
         if self.discards > num:
             raise ValueError('More discards than dice.')
+        
+    def description(self):
+        '''
+        Return a description of our rule-set.
+        
+        Subclasses will usually need to override this.
+        '''
+        return '%s discarding %d lowest' % (Dice.description(self), (self.discards))
         
     def _evaluateWithDiscards(self, dice):
         'Evaulate a list of dice by discarding the lowest values.'
@@ -351,6 +372,14 @@ class StoryTellerDice(Dice):
         # significantly differ from brute force for a dice pool of 10 dice.
         self.state = [1] * (num * 2)
         
+    def description(self):
+        '''
+        Return a description of our rule-set.
+        
+        Subclasses will usually need to override this.
+        '''
+        return 'StoryTeller d%d, pool = %d, threshold=%d, rollAgain=%d' % (self.sides, self.num, self.threshold, self.rollAgain)
+        
     def roll(self):
         'Evaluate one random roll of these dice.'
         successes = 0
@@ -406,6 +435,14 @@ class RiskDice(Dice):
         self.defendDice = defendDice
         if defendDice > attackDice:
             raise ValueError('More defend dice than attack dice')
+        
+    def description(self):
+        '''
+        Return a description of our rule-set.
+        
+        Subclasses will usually need to override this.
+        '''
+        return 'Risk with %d attacking dice versus %d defending dice' % (self.attackDice, self.defendDice)
         
     def sortedRoll(self, num):
         'Return one random roll of num dice, sorted descending.'
@@ -502,11 +539,16 @@ class RiskDice(Dice):
         '''
         Perform a monte carlo simulation and return the histogram
         '''
+        print '%s: Monte Carlo simulation with %d trials' % (self.description(), trials)
         results = self.Results(self.defendDice)
         for i in xrange(trials):
             roll = self.roll()
             results.addResult(roll[0], roll[1])
         return results
+        
+    def bruteforce(self):
+        'Not supported.'
+        print 'Brute force is not supported for the Risk dice rules.'
     
     
 ##### class ArcanumDice #####
@@ -532,6 +574,14 @@ class ArcanumDice(Dice):
         self.mark = 0
         self.minVal = -1
         self.maxVal = 1
+        
+    def description(self):
+        '''
+        Return a description of our rule-set.
+        
+        Subclasses will usually need to override this.
+        '''
+        return 'Arcanum with fair dice' 
         
     def _evaluate(self):
         'Evaluate one roll in the match.'
