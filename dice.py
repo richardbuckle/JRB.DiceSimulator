@@ -86,7 +86,7 @@ class Histogram(dict):
     def printTabbed(self):
         'Print tab-delimited, for import by apps such as Excel.'
         for bucket in sorted(self.keys()):
-            print "%s\t%s" % (bucket, self[bucket])
+            print "%s\t%s\t%s%%" % (bucket, self[bucket], self.frequency(bucket))
         
     def dump(self):
         'Print results and summary statistics.'
