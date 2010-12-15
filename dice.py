@@ -618,50 +618,50 @@ def main():
     '''Examples of usage'''
     
     if False:
-        print '4d6 montecarlo'
+        # 4d6 montecarlo
         dice = Dice(4, 6)
         histogram = dice.montecarlo(10000)
         histogram.dump()
         
-        print '2d6 * 2 montecarlo'
+    if False:
+        # 2d6 * 2 montecarlo
         dice = Dice(2, 6, 2)
         histogram = dice.montecarlo(10000)
         histogram.dump()
     
     if False:
-        print '3d6 bruteforce'
+        # 3d6 bruteforce
         dice = Dice(3, 6)
         histogram = dice.bruteforce()
         histogram.dump()
 
     if False:
-        print '3d6 montecarlo'
+        # 3d6 montecarlo
         dice = Dice(3, 6)
         histogram = dice.montecarlo(10000)
         histogram.dump()
 
-    if True:
-        print '4d6 discard 1 montecarlo'
+    if False:
+        # 4d6 discard 1 montecarlo
         dice = DiceDiscard(4, 6, 1, 1)
         histogram = dice.montecarlo(10000)
         histogram.dump()
 
     if False:
-        print '4d6 discard 1 bruteforce'
+        # 4d6 discard 1 bruteforce
         dice = DiceDiscard(4, 6, 1, 1)
         histogram = dice.bruteforce()
         histogram.dump()
 
     if False:
-        print 'Risk montecarlo'
+        # Risk montecarlo
         for armies in ( (3, 2), (3, 1), (2, 2), (2, 1), (1, 1) ):
-            print '%d on %d' % armies
             dice = RiskDice(*armies)
             results = dice.montecarlo(10000)
             results.dump()
     
     if False:
-        print 'Storyteller montecarlo'
+        # Storyteller montecarlo
         histograms = []
         maxDice = 5
         for i in xrange(1, maxDice + 1):
@@ -672,7 +672,7 @@ def main():
         multihisto.dump()
     
     if False:
-        print 'Storyteller bruteforce'
+        # Storyteller bruteforce
         histograms = []
         maxDice = 2
         for i in xrange(1, maxDice + 1):
@@ -683,7 +683,7 @@ def main():
         multihisto.dump()
 
     if True:
-        print 'Arcanum montecarlo'
+        # Arcanum montecarlo
         dice = ArcanumDice()
         histogram = dice.montecarlo(100000)
         histogram.dump()
