@@ -505,7 +505,52 @@ class RiskDice(Dice):
             roll = self.roll()
             results.addResult(roll[0], roll[1])
         return results
+    
+    
+##### class ArcanumDice #####
+class ArcanumDice(Dice):
+    '''
+    Dice rolls for the game found in Arcanum.
+    
+    The player rolls 2d6.
+    On the first roll, 7 is a win, 2 is a loss and any other score is remembered as the 'mark',
+    in which case the player rolls again.
+    On subsequent rolls, the mark is a win, 2 and 7 are both losses, and 
+    '''
+    
+    def __init__(self):
+        '''
+        Initialise from the fixed number of dice specified by the rules.
+        '''
+        Dice.__init__(self, 2, 6)
+        self.mark = 0
         
+    def _evaluate(self):
+        '''
+        Evaluate one roll.
+        '''
+        pips = Dice.roll(self)
+        print 'Pips = %d, mark = %d', (pips, self.mark)
+        if self.mark == 0: # first roll 
+            if pips == 7:
+                return 1 # win
+            if pips == 2:
+                return -1 # loss
+            self.mark = pips
+            return 0 # roll again
+        else:
+            if pips == 7 or pips == 2:
+                return -1 # loss
+            if pips == self.mark:
+                return 1 # win
+            return 0 # roll again
+        
+        def roll(self):
+            result = 0
+            while result == 0:
+                result = self._evaluate()
+            return result
+
     
 ##### main #####
 def main():
@@ -546,7 +591,7 @@ def main():
         histogram = dice.bruteforce()
         histogram.dump()
 
-    if True:
+    if False:
         print 'Risk montecarlo'
         for armies in ( (3, 2), (3, 1), (2, 2), (2, 1), (1, 1) ):
             print '%d on %d' % armies
@@ -575,6 +620,12 @@ def main():
             histograms.append(histogram)
         multihisto = MultiHistogramTabulator(histograms, range(1, maxDice + 1))
         multihisto.dump()
+
+    if True:
+        print 'Arcanum montecarlo'
+        dice = ArcanumDice()
+        histogram = dice.montecarlo(1)
+        histogram.dump()
 
 
 if __name__ == "__main__":
