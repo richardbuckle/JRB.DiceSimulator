@@ -524,13 +524,15 @@ class ArcanumDice(Dice):
         '''
         Dice.__init__(self, 2, 6)
         self.mark = 0
+        self.minVal = -1
+        self.maxVal = 1
         
     def _evaluate(self):
         '''
         Evaluate one roll.
         '''
         pips = Dice.roll(self)
-        print 'Pips = %d, mark = %d', (pips, self.mark)
+        print 'Pips = %d, mark = %d' % (pips, self.mark)
         if self.mark == 0: # first roll 
             if pips == 7:
                 return 1 # win
@@ -544,12 +546,18 @@ class ArcanumDice(Dice):
             if pips == self.mark:
                 return 1 # win
             return 0 # roll again
-        
-        def roll(self):
-            result = 0
-            while result == 0:
-                result = self._evaluate()
-            return result
+    
+    def roll(self):
+        '''
+        Evaluate one match.
+        '''
+        self.mark = 0
+        result = 0
+        while result == 0:
+            result = self._evaluate()
+        print 'Result = %d' % (result)
+        print
+        return result
 
     
 ##### main #####
@@ -624,7 +632,7 @@ def main():
     if True:
         print 'Arcanum montecarlo'
         dice = ArcanumDice()
-        histogram = dice.montecarlo(1)
+        histogram = dice.montecarlo(5)
         histogram.dump()
 
 
