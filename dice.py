@@ -511,12 +511,15 @@ class ArcanumDice(Dice):
     The player rolls 2d6.
     On the first roll, 7 is a win, 2 is a loss and any other score is remembered as the 'mark',
     in which case the player rolls again.
-    On subsequent rolls, the mark is a win, 2 and 7 are both losses, and 
+    On subsequent rolls, the mark is a win, 2 and 7 are both losses,
+    and anything else means roll again.
     '''
     
     def __init__(self):
         '''
         Initialise from the fixed number of dice specified by the rules.
+        
+        The histogram is +1 for win, -1 for loss and (internal only) 0 for roll again.
         '''
         Dice.__init__(self, 2, 6)
         self.mark = 0
@@ -524,11 +527,8 @@ class ArcanumDice(Dice):
         self.maxVal = 1
         
     def _evaluate(self):
-        '''
-        Evaluate one roll.
-        '''
+        'Evaluate one roll in the match.'
         pips = Dice.roll(self)
-        print 'Pips = %d, mark = %d' % (pips, self.mark)
         if self.mark == 0: # first roll 
             if pips == 7:
                 return 1 # win
@@ -544,16 +544,15 @@ class ArcanumDice(Dice):
             return 0 # roll again
     
     def roll(self):
-        '''
-        Evaluate one match.
-        '''
+        'Evaluate one match.'
         self.mark = 0
         result = 0
         while result == 0:
             result = self._evaluate()
-        print 'Result = %d' % (result)
-        print
         return result
+        
+    def bruteforce(self):
+        print 'Brute force is not supported for the Arcanum dice rules.'
 
     
 ##### main #####
