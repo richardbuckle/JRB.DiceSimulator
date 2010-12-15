@@ -11,17 +11,13 @@ Licence:        Public domain
 
 Usage:          See main()
 
-Compatibility:  Python 2.3 or later
+Compatibility:  Python 2.4 or later
 '''
 
 
 ###### imports ######
 import random
 import math
-
-# 2.3 compliance for 2.4 built-in set
-try: set
-except NameError: from sets import Set as set
 
 
 ###### constants ######
@@ -89,8 +85,8 @@ class Histogram(dict):
         
     def printTabbed(self):
         'Print tab-delimited, for import by apps such as Excel.'
-        for bucket in self.iteritems():
-            print "%s\t%s" % bucket
+        for bucket in sorted(self.keys()):
+            print "%s\t%s" % (bucket, self[bucket])
         
     def dump(self):
         'Print results and summary statistics.'
