@@ -6,7 +6,7 @@ Sundry dice simulations, with brute force and Monte Carlo analysis.
 This is really just a toy project since most of the rule-sets tested
 can be solved analytically.
 
-URL:            <http://www.sailmaker.co.uk/newfiles/dice.py>
+URL:            <https://github.com/richardbuckle/JRB.DiceSimulator>
 
 Maintainer:     Richard Buckle <mailto:richardb@sailmaker.co.uk>
 
