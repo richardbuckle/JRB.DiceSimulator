@@ -11,6 +11,9 @@
 ><font color="#ffffff" face="helvetica, arial"><a href=".">index</a><br><a href="file:/Development/Python/dice/dice.py">/Development/Python/dice/dice.py</a></font></td></tr></table>
     <p><tt>Sundry&nbsp;dice&nbsp;simulations,&nbsp;with&nbsp;brute&nbsp;force&nbsp;and&nbsp;Monte&nbsp;Carlo&nbsp;analysis.<br>
 &nbsp;<br>
+This&nbsp;is&nbsp;really&nbsp;just&nbsp;a&nbsp;toy&nbsp;project&nbsp;since&nbsp;most&nbsp;of&nbsp;the&nbsp;rule-sets&nbsp;tested<br>
+can&nbsp;be&nbsp;solved&nbsp;analytically.<br>
+&nbsp;<br>
 URL:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;<a href="http://www.sailmaker.co.uk/newfiles/dice.py">http://www.sailmaker.co.uk/newfiles/dice.py</a>&gt;<br>
 &nbsp;<br>
 Maintainer:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Richard&nbsp;Buckle&nbsp;&lt;mailto:richardb@sailmaker.co.uk&gt;<br>
@@ -19,12 +22,12 @@ Licence:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Public&nbsp;domain<br>
 &nbsp;<br>
 Usage:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;See&nbsp;<a href="#-main">main</a>()<br>
 &nbsp;<br>
-Compatibility:&nbsp;&nbsp;Python&nbsp;2.3&nbsp;or&nbsp;later</tt></p>
+Compatibility:&nbsp;&nbsp;Python&nbsp;2.4&nbsp;or&nbsp;later</tt></p>
 <p>
 <table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
 <tr bgcolor="#aa55cc">
 <td colspan=3 valign=bottom>&nbsp;<br>
-<font color="#fffff" face="helvetica, arial"><big><strong>Modules</strong></big></font></td></tr>
+<font color="#ffffff" face="helvetica, arial"><big><strong>Modules</strong></big></font></td></tr>
     
 <tr><td bgcolor="#aa55cc"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
 <td width="100%"><table width="100%" summary="list"><tr><td width="25%" valign=top><a href="math.html">math</a><br>
@@ -50,7 +53,8 @@ Compatibility:&nbsp;&nbsp;Python&nbsp;2.3&nbsp;or&nbsp;later</tt></p>
 <dt><font face="helvetica, arial"><a href="dice.html#Dice">Dice</a>
 </font></dt><dd>
 <dl>
-<dt><font face="helvetica, arial"><a href="dice.html#DiceDiscard">DiceDiscard</a>
+<dt><font face="helvetica, arial"><a href="dice.html#ArcanumDice">ArcanumDice</a>
+</font></dt><dt><font face="helvetica, arial"><a href="dice.html#DiceDiscard">DiceDiscard</a>
 </font></dt><dt><font face="helvetica, arial"><a href="dice.html#RiskDice">RiskDice</a>
 </font></dt><dt><font face="helvetica, arial"><a href="dice.html#StoryTellerDice">StoryTellerDice</a>
 </font></dt></dl>
@@ -59,6 +63,64 @@ Compatibility:&nbsp;&nbsp;Python&nbsp;2.3&nbsp;or&nbsp;later</tt></p>
 </dd>
 </dl>
  <p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#ffc8d8">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#000000" face="helvetica, arial"><a name="ArcanumDice">class <strong>ArcanumDice</strong></a>(<a href="dice.html#Dice">Dice</a>)</font></td></tr>
+    
+<tr bgcolor="#ffc8d8"><td rowspan=2><tt>&nbsp;&nbsp;&nbsp;</tt></td>
+<td colspan=2><tt><a href="#Dice">Dice</a>&nbsp;rolls&nbsp;for&nbsp;the&nbsp;game&nbsp;found&nbsp;in&nbsp;Arcanum.<br>
+&lt;<a href="http://www.gog.com/en/gamecard/arcanum_of_steamworks_and_magick_obscura">http://www.gog.com/en/gamecard/arcanum_of_steamworks_and_magick_obscura</a>&gt;<br>
+&nbsp;<br>
+The&nbsp;player&nbsp;rolls&nbsp;2d6.<br>
+On&nbsp;the&nbsp;first&nbsp;roll,&nbsp;7&nbsp;is&nbsp;a&nbsp;win,&nbsp;2&nbsp;is&nbsp;a&nbsp;loss&nbsp;and&nbsp;any&nbsp;other&nbsp;score&nbsp;is&nbsp;remembered&nbsp;as&nbsp;the&nbsp;'mark',<br>
+in&nbsp;which&nbsp;case&nbsp;the&nbsp;player&nbsp;rolls&nbsp;again.<br>
+On&nbsp;subsequent&nbsp;rolls,&nbsp;the&nbsp;mark&nbsp;is&nbsp;a&nbsp;win,&nbsp;2&nbsp;and&nbsp;7&nbsp;are&nbsp;both&nbsp;losses,<br>
+and&nbsp;anything&nbsp;else&nbsp;means&nbsp;roll&nbsp;again.<br>&nbsp;</tt></td></tr>
+<tr><td>&nbsp;</td>
+<td width="100%"><dl><dt>Method resolution order:</dt>
+<dd><a href="dice.html#ArcanumDice">ArcanumDice</a></dd>
+<dd><a href="dice.html#Dice">Dice</a></dd>
+<dd><a href="__builtin__.html#object">__builtin__.object</a></dd>
+</dl>
+<hr>
+Methods defined here:<br>
+<dl><dt><a name="ArcanumDice-__init__"><strong>__init__</strong></a>(self)</dt><dd><tt>Initialise&nbsp;from&nbsp;the&nbsp;fixed&nbsp;number&nbsp;of&nbsp;dice&nbsp;specified&nbsp;by&nbsp;the&nbsp;rules.<br>
+&nbsp;<br>
+The&nbsp;histogram&nbsp;is&nbsp;+1&nbsp;for&nbsp;win,&nbsp;-1&nbsp;for&nbsp;loss&nbsp;and&nbsp;(internal&nbsp;only)&nbsp;0&nbsp;for&nbsp;roll&nbsp;again.</tt></dd></dl>
+
+<dl><dt><a name="ArcanumDice-bruteforce"><strong>bruteforce</strong></a>(self)</dt><dd><tt>Not&nbsp;supported.</tt></dd></dl>
+
+<dl><dt><a name="ArcanumDice-description"><strong>description</strong></a>(self)</dt><dd><tt>Return&nbsp;a&nbsp;description&nbsp;of&nbsp;our&nbsp;rule-set.<br>
+&nbsp;<br>
+Subclasses&nbsp;will&nbsp;usually&nbsp;need&nbsp;to&nbsp;override&nbsp;this.</tt></dd></dl>
+
+<dl><dt><a name="ArcanumDice-roll"><strong>roll</strong></a>(self)</dt><dd><tt>Evaluate&nbsp;one&nbsp;match.</tt></dd></dl>
+
+<hr>
+Methods inherited from <a href="dice.html#Dice">Dice</a>:<br>
+<dl><dt><a name="ArcanumDice-__iter__"><strong>__iter__</strong></a>(self)</dt><dd><tt>Return&nbsp;an&nbsp;iterator,&nbsp;for&nbsp;use&nbsp;by&nbsp;<a href="#ArcanumDice-bruteforce">bruteforce</a>().</tt></dd></dl>
+
+<dl><dt><a name="ArcanumDice-fromState"><strong>fromState</strong></a>(self)</dt><dd><tt>Evaluate&nbsp;the&nbsp;current&nbsp;brute&nbsp;force&nbsp;state:<br>
+the&nbsp;base&nbsp;class&nbsp;implementation&nbsp;is&nbsp;to&nbsp;sum&nbsp;pips&nbsp;on&nbsp;the&nbsp;dice.<br>
+&nbsp;<br>
+Subclasses&nbsp;will&nbsp;usually&nbsp;need&nbsp;to&nbsp;override&nbsp;this.</tt></dd></dl>
+
+<dl><dt><a name="ArcanumDice-montecarlo"><strong>montecarlo</strong></a>(self, trials)</dt><dd><tt>Perform&nbsp;a&nbsp;monte&nbsp;carlo&nbsp;simulation&nbsp;and&nbsp;return&nbsp;the&nbsp;histogram.</tt></dd></dl>
+
+<dl><dt><a name="ArcanumDice-next"><strong>next</strong></a>(self)</dt><dd><tt>Used&nbsp;internally&nbsp;by&nbsp;<a href="#ArcanumDice-bruteforce">bruteforce</a>().<br>
+&nbsp;<br>
+Return&nbsp;our&nbsp;evaluation&nbsp;of&nbsp;the&nbsp;current&nbsp;brute&nbsp;force&nbsp;state,&nbsp;also&nbsp;advancing&nbsp;it.</tt></dd></dl>
+
+<hr>
+Data descriptors inherited from <a href="dice.html#Dice">Dice</a>:<br>
+<dl><dt><strong>__dict__</strong></dt>
+<dd><tt>dictionary&nbsp;for&nbsp;instance&nbsp;variables&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+<dl><dt><strong>__weakref__</strong></dt>
+<dd><tt>list&nbsp;of&nbsp;weak&nbsp;references&nbsp;to&nbsp;the&nbsp;object&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+</td></tr></table> <p>
 <table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
 <tr bgcolor="#ffc8d8">
 <td colspan=3 valign=bottom>&nbsp;<br>
@@ -83,6 +145,10 @@ In&nbsp;such&nbsp;cases,&nbsp;a&nbsp;Monte&nbsp;Carlo&nbsp;approach&nbsp;is&nbsp
 <dl><dt><a name="Dice-__iter__"><strong>__iter__</strong></a>(self)</dt><dd><tt>Return&nbsp;an&nbsp;iterator,&nbsp;for&nbsp;use&nbsp;by&nbsp;<a href="#Dice-bruteforce">bruteforce</a>().</tt></dd></dl>
 
 <dl><dt><a name="Dice-bruteforce"><strong>bruteforce</strong></a>(self)</dt><dd><tt>Perform&nbsp;a&nbsp;brute&nbsp;force&nbsp;enumeration&nbsp;and&nbsp;return&nbsp;the&nbsp;histogram.</tt></dd></dl>
+
+<dl><dt><a name="Dice-description"><strong>description</strong></a>(self)</dt><dd><tt>Return&nbsp;a&nbsp;description&nbsp;of&nbsp;our&nbsp;rule-set.<br>
+&nbsp;<br>
+Subclasses&nbsp;will&nbsp;usually&nbsp;need&nbsp;to&nbsp;override&nbsp;this.</tt></dd></dl>
 
 <dl><dt><a name="Dice-fromState"><strong>fromState</strong></a>(self)</dt><dd><tt>Evaluate&nbsp;the&nbsp;current&nbsp;brute&nbsp;force&nbsp;state:<br>
 the&nbsp;base&nbsp;class&nbsp;implementation&nbsp;is&nbsp;to&nbsp;sum&nbsp;pips&nbsp;on&nbsp;the&nbsp;dice.<br>
@@ -129,6 +195,10 @@ Methods defined here:<br>
 and&nbsp;number&nbsp;of&nbsp;discardable&nbsp;dice.<br>
 &nbsp;<br>
 Requires&nbsp;discards&nbsp;&lt;=&nbsp;num.</tt></dd></dl>
+
+<dl><dt><a name="DiceDiscard-description"><strong>description</strong></a>(self)</dt><dd><tt>Return&nbsp;a&nbsp;description&nbsp;of&nbsp;our&nbsp;rule-set.<br>
+&nbsp;<br>
+Subclasses&nbsp;will&nbsp;usually&nbsp;need&nbsp;to&nbsp;override&nbsp;this.</tt></dd></dl>
 
 <dl><dt><a name="DiceDiscard-fromState"><strong>fromState</strong></a>(self)</dt><dd><tt>Evaluate&nbsp;the&nbsp;current&nbsp;brute&nbsp;force&nbsp;state.</tt></dd></dl>
 
@@ -223,8 +293,6 @@ Methods inherited from <a href="__builtin__.html#dict">__builtin__.dict</a>:<br>
 
 <dl><dt><a name="Histogram-__gt__"><strong>__gt__</strong></a>(...)</dt><dd><tt>x.<a href="#Histogram-__gt__">__gt__</a>(y)&nbsp;&lt;==&gt;&nbsp;x&gt;y</tt></dd></dl>
 
-<dl><dt><a name="Histogram-__hash__"><strong>__hash__</strong></a>(...)</dt><dd><tt>x.<a href="#Histogram-__hash__">__hash__</a>()&nbsp;&lt;==&gt;&nbsp;hash(x)</tt></dd></dl>
-
 <dl><dt><a name="Histogram-__iter__"><strong>__iter__</strong></a>(...)</dt><dd><tt>x.<a href="#Histogram-__iter__">__iter__</a>()&nbsp;&lt;==&gt;&nbsp;iter(x)</tt></dd></dl>
 
 <dl><dt><a name="Histogram-__le__"><strong>__le__</strong></a>(...)</dt><dd><tt>x.<a href="#Histogram-__le__">__le__</a>(y)&nbsp;&lt;==&gt;&nbsp;x&lt;=y</tt></dd></dl>
@@ -238,6 +306,8 @@ Methods inherited from <a href="__builtin__.html#dict">__builtin__.dict</a>:<br>
 <dl><dt><a name="Histogram-__repr__"><strong>__repr__</strong></a>(...)</dt><dd><tt>x.<a href="#Histogram-__repr__">__repr__</a>()&nbsp;&lt;==&gt;&nbsp;repr(x)</tt></dd></dl>
 
 <dl><dt><a name="Histogram-__setitem__"><strong>__setitem__</strong></a>(...)</dt><dd><tt>x.<a href="#Histogram-__setitem__">__setitem__</a>(i,&nbsp;y)&nbsp;&lt;==&gt;&nbsp;x[i]=y</tt></dd></dl>
+
+<dl><dt><a name="Histogram-__sizeof__"><strong>__sizeof__</strong></a>(...)</dt><dd><tt>D.<a href="#Histogram-__sizeof__">__sizeof__</a>()&nbsp;-&gt;&nbsp;size&nbsp;of&nbsp;D&nbsp;in&nbsp;memory,&nbsp;in&nbsp;bytes</tt></dd></dl>
 
 <dl><dt><a name="Histogram-clear"><strong>clear</strong></a>(...)</dt><dd><tt>D.<a href="#Histogram-clear">clear</a>()&nbsp;-&gt;&nbsp;None.&nbsp;&nbsp;Remove&nbsp;all&nbsp;items&nbsp;from&nbsp;D.</tt></dd></dl>
 
@@ -257,24 +327,28 @@ Methods inherited from <a href="__builtin__.html#dict">__builtin__.dict</a>:<br>
 
 <dl><dt><a name="Histogram-keys"><strong>keys</strong></a>(...)</dt><dd><tt>D.<a href="#Histogram-keys">keys</a>()&nbsp;-&gt;&nbsp;list&nbsp;of&nbsp;D's&nbsp;keys</tt></dd></dl>
 
-<dl><dt><a name="Histogram-pop"><strong>pop</strong></a>(...)</dt><dd><tt>D.<a href="#Histogram-pop">pop</a>(k[,d])&nbsp;-&gt;&nbsp;v,&nbsp;remove&nbsp;specified&nbsp;key&nbsp;and&nbsp;return&nbsp;the&nbsp;corresponding&nbsp;value<br>
+<dl><dt><a name="Histogram-pop"><strong>pop</strong></a>(...)</dt><dd><tt>D.<a href="#Histogram-pop">pop</a>(k[,d])&nbsp;-&gt;&nbsp;v,&nbsp;remove&nbsp;specified&nbsp;key&nbsp;and&nbsp;return&nbsp;the&nbsp;corresponding&nbsp;value.<br>
 If&nbsp;key&nbsp;is&nbsp;not&nbsp;found,&nbsp;d&nbsp;is&nbsp;returned&nbsp;if&nbsp;given,&nbsp;otherwise&nbsp;KeyError&nbsp;is&nbsp;raised</tt></dd></dl>
 
 <dl><dt><a name="Histogram-popitem"><strong>popitem</strong></a>(...)</dt><dd><tt>D.<a href="#Histogram-popitem">popitem</a>()&nbsp;-&gt;&nbsp;(k,&nbsp;v),&nbsp;remove&nbsp;and&nbsp;return&nbsp;some&nbsp;(key,&nbsp;value)&nbsp;pair&nbsp;as&nbsp;a<br>
-2-tuple;&nbsp;but&nbsp;raise&nbsp;KeyError&nbsp;if&nbsp;D&nbsp;is&nbsp;empty</tt></dd></dl>
+2-tuple;&nbsp;but&nbsp;raise&nbsp;KeyError&nbsp;if&nbsp;D&nbsp;is&nbsp;empty.</tt></dd></dl>
 
 <dl><dt><a name="Histogram-setdefault"><strong>setdefault</strong></a>(...)</dt><dd><tt>D.<a href="#Histogram-setdefault">setdefault</a>(k[,d])&nbsp;-&gt;&nbsp;D.<a href="#Histogram-get">get</a>(k,d),&nbsp;also&nbsp;set&nbsp;D[k]=d&nbsp;if&nbsp;k&nbsp;not&nbsp;in&nbsp;D</tt></dd></dl>
 
-<dl><dt><a name="Histogram-update"><strong>update</strong></a>(...)</dt><dd><tt>D.<a href="#Histogram-update">update</a>(E,&nbsp;**F)&nbsp;-&gt;&nbsp;None.&nbsp;&nbsp;Update&nbsp;D&nbsp;from&nbsp;E&nbsp;and&nbsp;F:&nbsp;for&nbsp;k&nbsp;in&nbsp;E:&nbsp;D[k]&nbsp;=&nbsp;E[k]<br>
-(if&nbsp;E&nbsp;has&nbsp;keys&nbsp;else:&nbsp;for&nbsp;(k,&nbsp;v)&nbsp;in&nbsp;E:&nbsp;D[k]&nbsp;=&nbsp;v)&nbsp;then:&nbsp;for&nbsp;k&nbsp;in&nbsp;F:&nbsp;D[k]&nbsp;=&nbsp;F[k]</tt></dd></dl>
+<dl><dt><a name="Histogram-update"><strong>update</strong></a>(...)</dt><dd><tt>D.<a href="#Histogram-update">update</a>(E,&nbsp;**F)&nbsp;-&gt;&nbsp;None.&nbsp;&nbsp;Update&nbsp;D&nbsp;from&nbsp;<a href="__builtin__.html#dict">dict</a>/iterable&nbsp;E&nbsp;and&nbsp;F.<br>
+If&nbsp;E&nbsp;has&nbsp;a&nbsp;.<a href="#Histogram-keys">keys</a>()&nbsp;method,&nbsp;does:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;for&nbsp;k&nbsp;in&nbsp;E:&nbsp;D[k]&nbsp;=&nbsp;E[k]<br>
+If&nbsp;E&nbsp;lacks&nbsp;.<a href="#Histogram-keys">keys</a>()&nbsp;method,&nbsp;does:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;for&nbsp;(k,&nbsp;v)&nbsp;in&nbsp;E:&nbsp;D[k]&nbsp;=&nbsp;v<br>
+In&nbsp;either&nbsp;case,&nbsp;this&nbsp;is&nbsp;followed&nbsp;by:&nbsp;for&nbsp;k&nbsp;in&nbsp;F:&nbsp;D[k]&nbsp;=&nbsp;F[k]</tt></dd></dl>
 
 <dl><dt><a name="Histogram-values"><strong>values</strong></a>(...)</dt><dd><tt>D.<a href="#Histogram-values">values</a>()&nbsp;-&gt;&nbsp;list&nbsp;of&nbsp;D's&nbsp;values</tt></dd></dl>
 
 <hr>
 Data and other attributes inherited from <a href="__builtin__.html#dict">__builtin__.dict</a>:<br>
-<dl><dt><strong>__new__</strong> = &lt;built-in method __new__ of type object at 0x23474c&gt;<dd><tt>T.<a href="#Histogram-__new__">__new__</a>(S,&nbsp;...)&nbsp;-&gt;&nbsp;a&nbsp;new&nbsp;<a href="__builtin__.html#object">object</a>&nbsp;with&nbsp;type&nbsp;S,&nbsp;a&nbsp;subtype&nbsp;of&nbsp;T</tt></dl>
+<dl><dt><strong>__hash__</strong> = None</dl>
 
-<dl><dt><strong>fromkeys</strong> = &lt;built-in method fromkeys of type object at 0x324320&gt;<dd><tt><a href="__builtin__.html#dict">dict</a>.<a href="#Histogram-fromkeys">fromkeys</a>(S[,v])&nbsp;-&gt;&nbsp;New&nbsp;<a href="__builtin__.html#dict">dict</a>&nbsp;with&nbsp;keys&nbsp;from&nbsp;S&nbsp;and&nbsp;values&nbsp;equal&nbsp;to&nbsp;v.<br>
+<dl><dt><strong>__new__</strong> = &lt;built-in method __new__ of type object at 0x1001222a0&gt;<dd><tt>T.<a href="#Histogram-__new__">__new__</a>(S,&nbsp;...)&nbsp;-&gt;&nbsp;a&nbsp;new&nbsp;<a href="__builtin__.html#object">object</a>&nbsp;with&nbsp;type&nbsp;S,&nbsp;a&nbsp;subtype&nbsp;of&nbsp;T</tt></dl>
+
+<dl><dt><strong>fromkeys</strong> = &lt;built-in method fromkeys of type object at 0x1002978a0&gt;<dd><tt><a href="__builtin__.html#dict">dict</a>.<a href="#Histogram-fromkeys">fromkeys</a>(S[,v])&nbsp;-&gt;&nbsp;New&nbsp;<a href="__builtin__.html#dict">dict</a>&nbsp;with&nbsp;keys&nbsp;from&nbsp;S&nbsp;and&nbsp;values&nbsp;equal&nbsp;to&nbsp;v.<br>
 v&nbsp;defaults&nbsp;to&nbsp;None.</tt></dl>
 
 </td></tr></table> <p>
@@ -329,8 +403,6 @@ Methods inherited from <a href="__builtin__.html#dict">__builtin__.dict</a>:<br>
 
 <dl><dt><a name="MultiHistogramTabulator-__gt__"><strong>__gt__</strong></a>(...)</dt><dd><tt>x.<a href="#MultiHistogramTabulator-__gt__">__gt__</a>(y)&nbsp;&lt;==&gt;&nbsp;x&gt;y</tt></dd></dl>
 
-<dl><dt><a name="MultiHistogramTabulator-__hash__"><strong>__hash__</strong></a>(...)</dt><dd><tt>x.<a href="#MultiHistogramTabulator-__hash__">__hash__</a>()&nbsp;&lt;==&gt;&nbsp;hash(x)</tt></dd></dl>
-
 <dl><dt><a name="MultiHistogramTabulator-__iter__"><strong>__iter__</strong></a>(...)</dt><dd><tt>x.<a href="#MultiHistogramTabulator-__iter__">__iter__</a>()&nbsp;&lt;==&gt;&nbsp;iter(x)</tt></dd></dl>
 
 <dl><dt><a name="MultiHistogramTabulator-__le__"><strong>__le__</strong></a>(...)</dt><dd><tt>x.<a href="#MultiHistogramTabulator-__le__">__le__</a>(y)&nbsp;&lt;==&gt;&nbsp;x&lt;=y</tt></dd></dl>
@@ -344,6 +416,8 @@ Methods inherited from <a href="__builtin__.html#dict">__builtin__.dict</a>:<br>
 <dl><dt><a name="MultiHistogramTabulator-__repr__"><strong>__repr__</strong></a>(...)</dt><dd><tt>x.<a href="#MultiHistogramTabulator-__repr__">__repr__</a>()&nbsp;&lt;==&gt;&nbsp;repr(x)</tt></dd></dl>
 
 <dl><dt><a name="MultiHistogramTabulator-__setitem__"><strong>__setitem__</strong></a>(...)</dt><dd><tt>x.<a href="#MultiHistogramTabulator-__setitem__">__setitem__</a>(i,&nbsp;y)&nbsp;&lt;==&gt;&nbsp;x[i]=y</tt></dd></dl>
+
+<dl><dt><a name="MultiHistogramTabulator-__sizeof__"><strong>__sizeof__</strong></a>(...)</dt><dd><tt>D.<a href="#MultiHistogramTabulator-__sizeof__">__sizeof__</a>()&nbsp;-&gt;&nbsp;size&nbsp;of&nbsp;D&nbsp;in&nbsp;memory,&nbsp;in&nbsp;bytes</tt></dd></dl>
 
 <dl><dt><a name="MultiHistogramTabulator-clear"><strong>clear</strong></a>(...)</dt><dd><tt>D.<a href="#MultiHistogramTabulator-clear">clear</a>()&nbsp;-&gt;&nbsp;None.&nbsp;&nbsp;Remove&nbsp;all&nbsp;items&nbsp;from&nbsp;D.</tt></dd></dl>
 
@@ -363,24 +437,28 @@ Methods inherited from <a href="__builtin__.html#dict">__builtin__.dict</a>:<br>
 
 <dl><dt><a name="MultiHistogramTabulator-keys"><strong>keys</strong></a>(...)</dt><dd><tt>D.<a href="#MultiHistogramTabulator-keys">keys</a>()&nbsp;-&gt;&nbsp;list&nbsp;of&nbsp;D's&nbsp;keys</tt></dd></dl>
 
-<dl><dt><a name="MultiHistogramTabulator-pop"><strong>pop</strong></a>(...)</dt><dd><tt>D.<a href="#MultiHistogramTabulator-pop">pop</a>(k[,d])&nbsp;-&gt;&nbsp;v,&nbsp;remove&nbsp;specified&nbsp;key&nbsp;and&nbsp;return&nbsp;the&nbsp;corresponding&nbsp;value<br>
+<dl><dt><a name="MultiHistogramTabulator-pop"><strong>pop</strong></a>(...)</dt><dd><tt>D.<a href="#MultiHistogramTabulator-pop">pop</a>(k[,d])&nbsp;-&gt;&nbsp;v,&nbsp;remove&nbsp;specified&nbsp;key&nbsp;and&nbsp;return&nbsp;the&nbsp;corresponding&nbsp;value.<br>
 If&nbsp;key&nbsp;is&nbsp;not&nbsp;found,&nbsp;d&nbsp;is&nbsp;returned&nbsp;if&nbsp;given,&nbsp;otherwise&nbsp;KeyError&nbsp;is&nbsp;raised</tt></dd></dl>
 
 <dl><dt><a name="MultiHistogramTabulator-popitem"><strong>popitem</strong></a>(...)</dt><dd><tt>D.<a href="#MultiHistogramTabulator-popitem">popitem</a>()&nbsp;-&gt;&nbsp;(k,&nbsp;v),&nbsp;remove&nbsp;and&nbsp;return&nbsp;some&nbsp;(key,&nbsp;value)&nbsp;pair&nbsp;as&nbsp;a<br>
-2-tuple;&nbsp;but&nbsp;raise&nbsp;KeyError&nbsp;if&nbsp;D&nbsp;is&nbsp;empty</tt></dd></dl>
+2-tuple;&nbsp;but&nbsp;raise&nbsp;KeyError&nbsp;if&nbsp;D&nbsp;is&nbsp;empty.</tt></dd></dl>
 
 <dl><dt><a name="MultiHistogramTabulator-setdefault"><strong>setdefault</strong></a>(...)</dt><dd><tt>D.<a href="#MultiHistogramTabulator-setdefault">setdefault</a>(k[,d])&nbsp;-&gt;&nbsp;D.<a href="#MultiHistogramTabulator-get">get</a>(k,d),&nbsp;also&nbsp;set&nbsp;D[k]=d&nbsp;if&nbsp;k&nbsp;not&nbsp;in&nbsp;D</tt></dd></dl>
 
-<dl><dt><a name="MultiHistogramTabulator-update"><strong>update</strong></a>(...)</dt><dd><tt>D.<a href="#MultiHistogramTabulator-update">update</a>(E,&nbsp;**F)&nbsp;-&gt;&nbsp;None.&nbsp;&nbsp;Update&nbsp;D&nbsp;from&nbsp;E&nbsp;and&nbsp;F:&nbsp;for&nbsp;k&nbsp;in&nbsp;E:&nbsp;D[k]&nbsp;=&nbsp;E[k]<br>
-(if&nbsp;E&nbsp;has&nbsp;keys&nbsp;else:&nbsp;for&nbsp;(k,&nbsp;v)&nbsp;in&nbsp;E:&nbsp;D[k]&nbsp;=&nbsp;v)&nbsp;then:&nbsp;for&nbsp;k&nbsp;in&nbsp;F:&nbsp;D[k]&nbsp;=&nbsp;F[k]</tt></dd></dl>
+<dl><dt><a name="MultiHistogramTabulator-update"><strong>update</strong></a>(...)</dt><dd><tt>D.<a href="#MultiHistogramTabulator-update">update</a>(E,&nbsp;**F)&nbsp;-&gt;&nbsp;None.&nbsp;&nbsp;Update&nbsp;D&nbsp;from&nbsp;<a href="__builtin__.html#dict">dict</a>/iterable&nbsp;E&nbsp;and&nbsp;F.<br>
+If&nbsp;E&nbsp;has&nbsp;a&nbsp;.<a href="#MultiHistogramTabulator-keys">keys</a>()&nbsp;method,&nbsp;does:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;for&nbsp;k&nbsp;in&nbsp;E:&nbsp;D[k]&nbsp;=&nbsp;E[k]<br>
+If&nbsp;E&nbsp;lacks&nbsp;.<a href="#MultiHistogramTabulator-keys">keys</a>()&nbsp;method,&nbsp;does:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;for&nbsp;(k,&nbsp;v)&nbsp;in&nbsp;E:&nbsp;D[k]&nbsp;=&nbsp;v<br>
+In&nbsp;either&nbsp;case,&nbsp;this&nbsp;is&nbsp;followed&nbsp;by:&nbsp;for&nbsp;k&nbsp;in&nbsp;F:&nbsp;D[k]&nbsp;=&nbsp;F[k]</tt></dd></dl>
 
 <dl><dt><a name="MultiHistogramTabulator-values"><strong>values</strong></a>(...)</dt><dd><tt>D.<a href="#MultiHistogramTabulator-values">values</a>()&nbsp;-&gt;&nbsp;list&nbsp;of&nbsp;D's&nbsp;values</tt></dd></dl>
 
 <hr>
 Data and other attributes inherited from <a href="__builtin__.html#dict">__builtin__.dict</a>:<br>
-<dl><dt><strong>__new__</strong> = &lt;built-in method __new__ of type object at 0x23474c&gt;<dd><tt>T.<a href="#MultiHistogramTabulator-__new__">__new__</a>(S,&nbsp;...)&nbsp;-&gt;&nbsp;a&nbsp;new&nbsp;<a href="__builtin__.html#object">object</a>&nbsp;with&nbsp;type&nbsp;S,&nbsp;a&nbsp;subtype&nbsp;of&nbsp;T</tt></dl>
+<dl><dt><strong>__hash__</strong> = None</dl>
 
-<dl><dt><strong>fromkeys</strong> = &lt;built-in method fromkeys of type object at 0x326380&gt;<dd><tt><a href="__builtin__.html#dict">dict</a>.<a href="#MultiHistogramTabulator-fromkeys">fromkeys</a>(S[,v])&nbsp;-&gt;&nbsp;New&nbsp;<a href="__builtin__.html#dict">dict</a>&nbsp;with&nbsp;keys&nbsp;from&nbsp;S&nbsp;and&nbsp;values&nbsp;equal&nbsp;to&nbsp;v.<br>
+<dl><dt><strong>__new__</strong> = &lt;built-in method __new__ of type object at 0x1001222a0&gt;<dd><tt>T.<a href="#MultiHistogramTabulator-__new__">__new__</a>(S,&nbsp;...)&nbsp;-&gt;&nbsp;a&nbsp;new&nbsp;<a href="__builtin__.html#object">object</a>&nbsp;with&nbsp;type&nbsp;S,&nbsp;a&nbsp;subtype&nbsp;of&nbsp;T</tt></dl>
+
+<dl><dt><strong>fromkeys</strong> = &lt;built-in method fromkeys of type object at 0x100297c50&gt;<dd><tt><a href="__builtin__.html#dict">dict</a>.<a href="#MultiHistogramTabulator-fromkeys">fromkeys</a>(S[,v])&nbsp;-&gt;&nbsp;New&nbsp;<a href="__builtin__.html#dict">dict</a>&nbsp;with&nbsp;keys&nbsp;from&nbsp;S&nbsp;and&nbsp;values&nbsp;equal&nbsp;to&nbsp;v.<br>
 v&nbsp;defaults&nbsp;to&nbsp;None.</tt></dl>
 
 </td></tr></table> <p>
@@ -409,6 +487,12 @@ Methods defined here:<br>
 &nbsp;<br>
 Requires&nbsp;defendDice&nbsp;&lt;=&nbsp;attackDice.</tt></dd></dl>
 
+<dl><dt><a name="RiskDice-bruteforce"><strong>bruteforce</strong></a>(self)</dt><dd><tt>Not&nbsp;supported.</tt></dd></dl>
+
+<dl><dt><a name="RiskDice-description"><strong>description</strong></a>(self)</dt><dd><tt>Return&nbsp;a&nbsp;description&nbsp;of&nbsp;our&nbsp;rule-set.<br>
+&nbsp;<br>
+Subclasses&nbsp;will&nbsp;usually&nbsp;need&nbsp;to&nbsp;override&nbsp;this.</tt></dd></dl>
+
 <dl><dt><a name="RiskDice-montecarlo"><strong>montecarlo</strong></a>(self, trials)</dt><dd><tt>Perform&nbsp;a&nbsp;monte&nbsp;carlo&nbsp;simulation&nbsp;and&nbsp;return&nbsp;the&nbsp;histogram</tt></dd></dl>
 
 <dl><dt><a name="RiskDice-roll"><strong>roll</strong></a>(self)</dt><dd><tt>Return&nbsp;the&nbsp;outcome&nbsp;of&nbsp;one&nbsp;random&nbsp;battle&nbsp;with&nbsp;these&nbsp;dice<br>
@@ -423,8 +507,6 @@ Data and other attributes defined here:<br>
 <hr>
 Methods inherited from <a href="dice.html#Dice">Dice</a>:<br>
 <dl><dt><a name="RiskDice-__iter__"><strong>__iter__</strong></a>(self)</dt><dd><tt>Return&nbsp;an&nbsp;iterator,&nbsp;for&nbsp;use&nbsp;by&nbsp;<a href="#RiskDice-bruteforce">bruteforce</a>().</tt></dd></dl>
-
-<dl><dt><a name="RiskDice-bruteforce"><strong>bruteforce</strong></a>(self)</dt><dd><tt>Perform&nbsp;a&nbsp;brute&nbsp;force&nbsp;enumeration&nbsp;and&nbsp;return&nbsp;the&nbsp;histogram.</tt></dd></dl>
 
 <dl><dt><a name="RiskDice-fromState"><strong>fromState</strong></a>(self)</dt><dd><tt>Evaluate&nbsp;the&nbsp;current&nbsp;brute&nbsp;force&nbsp;state:<br>
 the&nbsp;base&nbsp;class&nbsp;implementation&nbsp;is&nbsp;to&nbsp;sum&nbsp;pips&nbsp;on&nbsp;the&nbsp;dice.<br>
@@ -473,6 +555,10 @@ threshold&nbsp;for&nbsp;success&nbsp;and&nbsp;threshold&nbsp;to&nbsp;roll&nbsp;a
 TODO:&nbsp;Roll&nbsp;again&nbsp;is&nbsp;once-only,&nbsp;contrary&nbsp;to&nbsp;White&nbsp;Wolf's&nbsp;system.<br>
 &nbsp;<br>
 Requires&nbsp;rollAgain&nbsp;&gt;=&nbsp;threshold.</tt></dd></dl>
+
+<dl><dt><a name="StoryTellerDice-description"><strong>description</strong></a>(self)</dt><dd><tt>Return&nbsp;a&nbsp;description&nbsp;of&nbsp;our&nbsp;rule-set.<br>
+&nbsp;<br>
+Subclasses&nbsp;will&nbsp;usually&nbsp;need&nbsp;to&nbsp;override&nbsp;this.</tt></dd></dl>
 
 <dl><dt><a name="StoryTellerDice-fromState"><strong>fromState</strong></a>(self)</dt><dd><tt>Evaluate&nbsp;the&nbsp;current&nbsp;brute&nbsp;force&nbsp;state.<br>
 rollAgain&nbsp;giving&nbsp;another&nbsp;&gt;=&nbsp;self.<strong>rollAgain</strong>&nbsp;is&nbsp;ignored.</tt></dd></dl>

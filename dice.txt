@@ -7,6 +7,9 @@ FILE
     /Development/Python/dice/dice.py
 
 DESCRIPTION
+    This is really just a toy project since most of the rule-sets tested
+    can be solved analytically.
+    
     URL:            <http://www.sailmaker.co.uk/newfiles/dice.py>
     
     Maintainer:     Richard Buckle <mailto:richardb@sailmaker.co.uk>
@@ -15,7 +18,7 @@ DESCRIPTION
     
     Usage:          See main()
     
-    Compatibility:  Python 2.3 or later
+    Compatibility:  Python 2.4 or later
 
 CLASSES
     __builtin__.dict(__builtin__.object)
@@ -23,9 +26,72 @@ CLASSES
         MultiHistogramTabulator
     __builtin__.object
         Dice
+            ArcanumDice
             DiceDiscard
             RiskDice
             StoryTellerDice
+    
+    class ArcanumDice(Dice)
+     |  Dice rolls for the game found in Arcanum.
+     |  <http://www.gog.com/en/gamecard/arcanum_of_steamworks_and_magick_obscura>
+     |  
+     |  The player rolls 2d6.
+     |  On the first roll, 7 is a win, 2 is a loss and any other score is remembered as the 'mark',
+     |  in which case the player rolls again.
+     |  On subsequent rolls, the mark is a win, 2 and 7 are both losses,
+     |  and anything else means roll again.
+     |  
+     |  Method resolution order:
+     |      ArcanumDice
+     |      Dice
+     |      __builtin__.object
+     |  
+     |  Methods defined here:
+     |  
+     |  __init__(self)
+     |      Initialise from the fixed number of dice specified by the rules.
+     |      
+     |      The histogram is +1 for win, -1 for loss and (internal only) 0 for roll again.
+     |  
+     |  bruteforce(self)
+     |      Not supported.
+     |  
+     |  description(self)
+     |      Return a description of our rule-set.
+     |      
+     |      Subclasses will usually need to override this.
+     |  
+     |  roll(self)
+     |      Evaluate one match.
+     |  
+     |  ----------------------------------------------------------------------
+     |  Methods inherited from Dice:
+     |  
+     |  __iter__(self)
+     |      Return an iterator, for use by bruteforce().
+     |  
+     |  fromState(self)
+     |      Evaluate the current brute force state:
+     |      the base class implementation is to sum pips on the dice.
+     |      
+     |      Subclasses will usually need to override this.
+     |  
+     |  montecarlo(self, trials)
+     |      Perform a monte carlo simulation and return the histogram.
+     |  
+     |  next(self)
+     |      Used internally by bruteforce().
+     |      
+     |      Return our evaluation of the current brute force state, also advancing it.
+     |  
+     |  ----------------------------------------------------------------------
+     |  Data descriptors inherited from Dice:
+     |  
+     |  __dict__
+     |      dictionary for instance variables (if defined)
+     |  
+     |  __weakref__
+     |      list of weak references to the object (if defined)
     
     class Dice(__builtin__.object)
      |  Base class for rolling dice; sums the pips on the dice.
@@ -50,6 +116,11 @@ CLASSES
      |  
      |  bruteforce(self)
      |      Perform a brute force enumeration and return the histogram.
+     |  
+     |  description(self)
+     |      Return a description of our rule-set.
+     |      
+     |      Subclasses will usually need to override this.
      |  
      |  fromState(self)
      |      Evaluate the current brute force state:
@@ -96,6 +167,11 @@ CLASSES
      |      and number of discardable dice.
      |      
      |      Requires discards <= num.
+     |  
+     |  description(self)
+     |      Return a description of our rule-set.
+     |      
+     |      Subclasses will usually need to override this.
      |  
      |  fromState(self)
      |      Evaluate the current brute force state.
@@ -212,9 +288,6 @@ CLASSES
      |  __gt__(...)
      |      x.__gt__(y) <==> x>y
      |  
-     |  __hash__(...)
-     |      x.__hash__() <==> hash(x)
-     |  
      |  __iter__(...)
      |      x.__iter__() <==> iter(x)
      |  
@@ -235,6 +308,9 @@ CLASSES
      |  
      |  __setitem__(...)
      |      x.__setitem__(i, y) <==> x[i]=y
+     |  
+     |  __sizeof__(...)
+     |      D.__sizeof__() -> size of D in memory, in bytes
      |  
      |  clear(...)
      |      D.clear() -> None.  Remove all items from D.
@@ -264,19 +340,21 @@ CLASSES
      |      D.keys() -> list of D's keys
      |  
      |  pop(...)
-     |      D.pop(k[,d]) -> v, remove specified key and return the corresponding value
+     |      D.pop(k[,d]) -> v, remove specified key and return the corresponding value.
      |      If key is not found, d is returned if given, otherwise KeyError is raised
      |  
      |  popitem(...)
      |      D.popitem() -> (k, v), remove and return some (key, value) pair as a
-     |      2-tuple; but raise KeyError if D is empty
+     |      2-tuple; but raise KeyError if D is empty.
      |  
      |  setdefault(...)
      |      D.setdefault(k[,d]) -> D.get(k,d), also set D[k]=d if k not in D
      |  
      |  update(...)
-     |      D.update(E, **F) -> None.  Update D from E and F: for k in E: D[k] = E[k]
-     |      (if E has keys else: for (k, v) in E: D[k] = v) then: for k in F: D[k] = F[k]
+     |      D.update(E, **F) -> None.  Update D from dict/iterable E and F.
+     |      If E has a .keys() method, does:     for k in E: D[k] = E[k]
+     |      If E lacks .keys() method, does:     for (k, v) in E: D[k] = v
+     |      In either case, this is followed by: for k in F: D[k] = F[k]
      |  
      |  values(...)
      |      D.values() -> list of D's values
@@ -284,10 +362,12 @@ CLASSES
      |  ----------------------------------------------------------------------
      |  Data and other attributes inherited from __builtin__.dict:
      |  
-     |  __new__ = <built-in method __new__ of type object at 0x23474c>
+     |  __hash__ = None
+     |  
+     |  __new__ = <built-in method __new__ of type object at 0x1001222a0>
      |      T.__new__(S, ...) -> a new object with type S, a subtype of T
      |  
-     |  fromkeys = <built-in method fromkeys of type object at 0x324c10>
+     |  fromkeys = <built-in method fromkeys of type object at 0x1002920e0>
      |      dict.fromkeys(S[,v]) -> New dict with keys from S and values equal to v.
      |      v defaults to None.
     
@@ -350,9 +430,6 @@ CLASSES
      |  __gt__(...)
      |      x.__gt__(y) <==> x>y
      |  
-     |  __hash__(...)
-     |      x.__hash__() <==> hash(x)
-     |  
      |  __iter__(...)
      |      x.__iter__() <==> iter(x)
      |  
@@ -373,6 +450,9 @@ CLASSES
      |  
      |  __setitem__(...)
      |      x.__setitem__(i, y) <==> x[i]=y
+     |  
+     |  __sizeof__(...)
+     |      D.__sizeof__() -> size of D in memory, in bytes
      |  
      |  clear(...)
      |      D.clear() -> None.  Remove all items from D.
@@ -402,19 +482,21 @@ CLASSES
      |      D.keys() -> list of D's keys
      |  
      |  pop(...)
-     |      D.pop(k[,d]) -> v, remove specified key and return the corresponding value
+     |      D.pop(k[,d]) -> v, remove specified key and return the corresponding value.
      |      If key is not found, d is returned if given, otherwise KeyError is raised
      |  
      |  popitem(...)
      |      D.popitem() -> (k, v), remove and return some (key, value) pair as a
-     |      2-tuple; but raise KeyError if D is empty
+     |      2-tuple; but raise KeyError if D is empty.
      |  
      |  setdefault(...)
      |      D.setdefault(k[,d]) -> D.get(k,d), also set D[k]=d if k not in D
      |  
      |  update(...)
-     |      D.update(E, **F) -> None.  Update D from E and F: for k in E: D[k] = E[k]
-     |      (if E has keys else: for (k, v) in E: D[k] = v) then: for k in F: D[k] = F[k]
+     |      D.update(E, **F) -> None.  Update D from dict/iterable E and F.
+     |      If E has a .keys() method, does:     for k in E: D[k] = E[k]
+     |      If E lacks .keys() method, does:     for (k, v) in E: D[k] = v
+     |      In either case, this is followed by: for k in F: D[k] = F[k]
      |  
      |  values(...)
      |      D.values() -> list of D's values
@@ -422,10 +504,12 @@ CLASSES
      |  ----------------------------------------------------------------------
      |  Data and other attributes inherited from __builtin__.dict:
      |  
-     |  __new__ = <built-in method __new__ of type object at 0x23474c>
+     |  __hash__ = None
+     |  
+     |  __new__ = <built-in method __new__ of type object at 0x1001222a0>
      |      T.__new__(S, ...) -> a new object with type S, a subtype of T
      |  
-     |  fromkeys = <built-in method fromkeys of type object at 0x326050>
+     |  fromkeys = <built-in method fromkeys of type object at 0x100292790>
      |      dict.fromkeys(S[,v]) -> New dict with keys from S and values equal to v.
      |      v defaults to None.
     
@@ -450,6 +534,14 @@ CLASSES
      |      
      |      Requires defendDice <= attackDice.
      |  
+     |  bruteforce(self)
+     |      Not supported.
+     |  
+     |  description(self)
+     |      Return a description of our rule-set.
+     |      
+     |      Subclasses will usually need to override this.
+     |  
      |  montecarlo(self, trials)
      |      Perform a monte carlo simulation and return the histogram
      |  
@@ -471,9 +563,6 @@ CLASSES
      |  
      |  __iter__(self)
      |      Return an iterator, for use by bruteforce().
-     |  
-     |  bruteforce(self)
-     |      Perform a brute force enumeration and return the histogram.
      |  
      |  fromState(self)
      |      Evaluate the current brute force state:
@@ -520,6 +609,11 @@ CLASSES
      |      TODO: Roll again is once-only, contrary to White Wolf's system.
      |      
      |      Requires rollAgain >= threshold.
+     |  
+     |  description(self)
+     |      Return a description of our rule-set.
+     |      
+     |      Subclasses will usually need to override this.
      |  
      |  fromState(self)
      |      Evaluate the current brute force state.

@@ -3,6 +3,9 @@
 '''
 Sundry dice simulations, with brute force and Monte Carlo analysis.
 
+This is really just a toy project since most of the rule-sets tested
+can be solved analytically.
+
 URL:            <http://www.sailmaker.co.uk/newfiles/dice.py>
 
 Maintainer:     Richard Buckle <mailto:richardb@sailmaker.co.uk>
@@ -11,7 +14,7 @@ Licence:        Public domain
 
 Usage:          See main()
 
-Compatibility:  Python 2.3 or later
+Compatibility:  Python 2.4 or later
 '''
 
 
@@ -19,17 +22,13 @@ Compatibility:  Python 2.3 or later
 import random
 import math
 
-# 2.3 compliance for 2.4 built-in set
-try: set
-except NameError: from sets import Set as set
-
 
 ###### constants ######
 __author__      = "Richard Buckle <mailto:richardb@sailmaker.co.uk>"
 __status__      = "stable"
-__version__     = "1.0.3"
-__revision__    = "1.0.3"
-__date__        = "2009.01.16"
+__version__     = "1.0.4"
+__revision__    = "1.0.4"
+__date__        = "2010.12.16"
 __copyright__   = "Public domain"
 
 
@@ -89,8 +88,8 @@ class Histogram(dict):
         
     def printTabbed(self):
         'Print tab-delimited, for import by apps such as Excel.'
-        for bucket in self.iteritems():
-            print "%s\t%s" % bucket
+        for bucket in sorted(self.keys()):
+            print "%s\t%s\t%s%%" % (bucket, self[bucket], self.frequency(bucket))
         
     def dump(self):
         'Print results and summary statistics.'
@@ -187,6 +186,17 @@ class Dice(object):
     def __iter__(self):
         'Return an iterator, for use by bruteforce().'
         return self
+            
+    def description(self):
+        '''
+        Return a description of our rule-set.
+        
+        Subclasses will usually need to override this.
+        '''
+        if self.multiplier == 1:
+            return '%dd%d' % (self.num, self.sides)
+        else:
+            return '%dd%d*%d' % (self.num, self.sides, self.multiplier)
         
     def roll(self):
         '''
@@ -247,6 +257,10 @@ class Dice(object):
 
     def montecarlo(self, trials):
         'Perform a monte carlo simulation and return the histogram.'
+        if trials < 2:
+            print 'You need at least 2 trials'
+            return
+        print '%s: Monte Carlo simulation with %d trials' % (self.description(), trials)
         histogram = Histogram(self.minVal, self.maxVal)
         for dummy in xrange(trials):
             # random roll
@@ -256,6 +270,7 @@ class Dice(object):
         
     def bruteforce(self):
         'Perform a brute force enumeration and return the histogram.'
+        print '%s: brute force enumeration' % (self.description(),)
         histogram = Histogram(self.minVal, self.maxVal)
         for roll in self:
             histogram[roll] = histogram[roll] + 1
@@ -283,6 +298,14 @@ class DiceDiscard(Dice):
         self.maxVal = (num - discards) * multiplier * sides 
         if self.discards > num:
             raise ValueError('More discards than dice.')
+        
+    def description(self):
+        '''
+        Return a description of our rule-set.
+        
+        Subclasses will usually need to override this.
+        '''
+        return '%s discarding %d lowest' % (Dice.description(self), (self.discards))
         
     def _evaluateWithDiscards(self, dice):
         'Evaulate a list of dice by discarding the lowest values.'
@@ -349,6 +372,14 @@ class StoryTellerDice(Dice):
         # significantly differ from brute force for a dice pool of 10 dice.
         self.state = [1] * (num * 2)
         
+    def description(self):
+        '''
+        Return a description of our rule-set.
+        
+        Subclasses will usually need to override this.
+        '''
+        return 'StoryTeller d%d, pool = %d, threshold=%d, rollAgain=%d' % (self.sides, self.num, self.threshold, self.rollAgain)
+        
     def roll(self):
         'Evaluate one random roll of these dice.'
         successes = 0
@@ -404,6 +435,14 @@ class RiskDice(Dice):
         self.defendDice = defendDice
         if defendDice > attackDice:
             raise ValueError('More defend dice than attack dice')
+        
+    def description(self):
+        '''
+        Return a description of our rule-set.
+        
+        Subclasses will usually need to override this.
+        '''
+        return 'Risk with %d attacking dice versus %d defending dice' % (self.attackDice, self.defendDice)
         
     def sortedRoll(self, num):
         'Return one random roll of num dice, sorted descending.'
@@ -500,62 +539,129 @@ class RiskDice(Dice):
         '''
         Perform a monte carlo simulation and return the histogram
         '''
+        print '%s: Monte Carlo simulation with %d trials' % (self.description(), trials)
         results = self.Results(self.defendDice)
         for i in xrange(trials):
             roll = self.roll()
             results.addResult(roll[0], roll[1])
         return results
         
+    def bruteforce(self):
+        'Not supported.'
+        print 'Brute force is not supported for the Risk dice rules.'
+    
+    
+##### class ArcanumDice #####
+class ArcanumDice(Dice):
+    '''
+    Dice rolls for the game found in Arcanum.
+    <http://www.gog.com/en/gamecard/arcanum_of_steamworks_and_magick_obscura>
+    
+    The player rolls 2d6.
+    On the first roll, 7 is a win, 2 is a loss and any other score is remembered as the 'mark',
+    in which case the player rolls again.
+    On subsequent rolls, the mark is a win, 2 and 7 are both losses,
+    and anything else means roll again.
+    '''
+    
+    def __init__(self):
+        '''
+        Initialise from the fixed number of dice specified by the rules.
+        
+        The histogram is +1 for win, -1 for loss and (internal only) 0 for roll again.
+        '''
+        Dice.__init__(self, 2, 6)
+        self.mark = 0
+        self.minVal = -1
+        self.maxVal = 1
+        
+    def description(self):
+        '''
+        Return a description of our rule-set.
+        
+        Subclasses will usually need to override this.
+        '''
+        return 'Arcanum with fair dice' 
+        
+    def _evaluate(self):
+        'Evaluate one roll in the match.'
+        pips = Dice.roll(self)
+        if self.mark == 0: # first roll 
+            if pips == 7:
+                return 1 # win
+            if pips == 2:
+                return -1 # loss
+            self.mark = pips
+            return 0 # roll again
+        else: # subsequent roll
+            if pips == 7 or pips == 2:
+                return -1 # loss
+            if pips == self.mark:
+                return 1 # win
+            return 0 # roll again
+    
+    def roll(self):
+        'Evaluate one match.'
+        self.mark = 0
+        result = 0
+        while result == 0:
+            result = self._evaluate()
+        return result
+        
+    def bruteforce(self):
+        'Not supported.'
+        print 'Brute force is not supported for the Arcanum dice rules.'
+
     
 ##### main #####
 def main():
     '''Examples of usage'''
     
     if False:
-        print '4d6 montecarlo'
+        # 4d6 montecarlo
         dice = Dice(4, 6)
         histogram = dice.montecarlo(10000)
         histogram.dump()
         
-        print '2d6 * 2 montecarlo'
+    if False:
+        # 2d6 * 2 montecarlo
         dice = Dice(2, 6, 2)
         histogram = dice.montecarlo(10000)
         histogram.dump()
     
     if False:
-        print '3d6 bruteforce'
+        # 3d6 bruteforce
         dice = Dice(3, 6)
         histogram = dice.bruteforce()
         histogram.dump()
 
     if False:
-        print '3d6 montecarlo'
+        # 3d6 montecarlo
         dice = Dice(3, 6)
         histogram = dice.montecarlo(10000)
         histogram.dump()
 
     if False:
-        print '4d6 discard 1 montecarlo'
+        # 4d6 discard 1 montecarlo
         dice = DiceDiscard(4, 6, 1, 1)
         histogram = dice.montecarlo(10000)
         histogram.dump()
 
     if False:
-        print '4d6 discard 1 bruteforce'
+        # 4d6 discard 1 bruteforce
         dice = DiceDiscard(4, 6, 1, 1)
         histogram = dice.bruteforce()
         histogram.dump()
 
-    if True:
-        print 'Risk montecarlo'
+    if False:
+        # Risk montecarlo
         for armies in ( (3, 2), (3, 1), (2, 2), (2, 1), (1, 1) ):
-            print '%d on %d' % armies
             dice = RiskDice(*armies)
             results = dice.montecarlo(10000)
             results.dump()
     
     if False:
-        print 'Storyteller montecarlo'
+        # Storyteller montecarlo
         histograms = []
         maxDice = 5
         for i in xrange(1, maxDice + 1):
@@ -566,7 +672,7 @@ def main():
         multihisto.dump()
     
     if False:
-        print 'Storyteller bruteforce'
+        # Storyteller bruteforce
         histograms = []
         maxDice = 2
         for i in xrange(1, maxDice + 1):
@@ -575,6 +681,12 @@ def main():
             histograms.append(histogram)
         multihisto = MultiHistogramTabulator(histograms, range(1, maxDice + 1))
         multihisto.dump()
+
+    if True:
+        # Arcanum montecarlo
+        dice = ArcanumDice()
+        histogram = dice.montecarlo(100000)
+        histogram.dump()
 
 
 if __name__ == "__main__":
