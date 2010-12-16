@@ -26,8 +26,8 @@ import math
 ###### constants ######
 __author__      = "Richard Buckle <mailto:richardb@sailmaker.co.uk>"
 __status__      = "stable"
-__version__     = "1.0.4"
-__revision__    = "1.0.4"
+__version__     = "1.0.5"
+__revision__    = "1.0.5"
 __date__        = "2010.12.16"
 __copyright__   = "Public domain"
 
